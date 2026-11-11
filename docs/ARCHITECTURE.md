@@ -1,106 +1,112 @@
-# HLA Twin — execution plan for a fresh coding-agent conversation
+# HLA Twin — Architecture et roadmap
 
-## Outcome of the first execution phase
+## État réel après la Phase 1
 
-Create a boring, reliable foundation that lets frontend and backend development
-start in parallel. Do not implement unvalidated medical behavior yet.
-
-At the end of this phase:
-
-- the monorepo installs and starts locally;
-- Next.js and FastAPI expose health screens/endpoints;
-- OpenAPI generates usable TypeScript types;
-- one synthetic recipient and three donors flow from a mock API to the UI;
-- Docker Compose starts the web and API services;
-- tests and checks run through documented top-level commands;
-- medical decisions remain explicit placeholders pending health review.
-
-## Recommended sequence
-
-### Phase 1 — Repository foundation
-
-1. Read all applicable `AGENTS.md` files and the product documents.
-2. Inspect Git status and preserve the existing Markdown documents.
-3. Create the monorepo workspace and root tooling.
-4. Scaffold `apps/web` with Next.js and strict TypeScript.
-5. Scaffold `apps/api` with FastAPI, Pydantic and Pytest.
-6. Add `.env.example`, ignore rules, formatting and lint configuration.
-7. Add top-level `make dev`, `make test`, `make check`, and `make demo` commands.
-8. Verify both applications independently before integration.
-
-### Phase 2 — Contract-first vertical slice
-
-1. Define minimal transport models for recipient, donor, timeline event, pair
-   analysis, simulation request, validation action, audit event and follow-up.
-2. Add canonical JSON examples with explicit draft/simulated markers.
-3. Expose FastAPI OpenAPI and generate TypeScript types from it.
-4. Add contract tests that validate the examples.
-5. Implement read-only mock endpoints for one recipient and three donors.
-6. Render the recipient and donors in the web app using generated types.
-
-### Phase 3 — Demo infrastructure
-
-1. Add deterministic scenario loading and reset behavior.
-2. Add Dockerfiles and Docker Compose.
-3. Add one API integration test and one Playwright smoke path.
-4. Confirm startup from a clean checkout without external services.
-5. Document exact commands and known medical placeholders.
-
-## Explicitly defer until health review
-
-- clinical thresholds and serum freshness windows;
-- DSA interpretation and severity;
-- virtual-crossmatch conclusions;
-- confidence and ranking semantics;
-- mandatory expert-review criteria;
-- post-transplant alert thresholds;
-- medically authoritative wording.
-
-Code may contain interfaces and pending configuration for these areas, but not
-guessed behavior.
-
-## Prompt to paste into a new Codex conversation
+La fondation du monorepo est terminée et vérifiée localement. Elle contient :
 
 ```text
-We are starting implementation of HLA Twin in this repository.
-
-Read the root AGENTS.md, every relevant nested AGENTS.md, and
-docs/EXECUTION_PLAN.md completely before editing. Also read the concise product
-brief and hackathon plan referenced by AGENTS.md.
-
-Implement only Phase 1: Repository foundation from docs/EXECUTION_PLAN.md.
-Preserve all existing Markdown documents. Do not implement or invent medical
-rules. Use Next.js + strict TypeScript for apps/web and FastAPI + Pydantic +
-Pytest for apps/api. Add the top-level commands described in the plan and verify
-them. Keep the change minimal and production-shaped for a hackathon.
-
-Before editing, report the current repository state, the exact files you expect
-to add, and any conflict you found. Then implement, run the relevant checks, and
-finish with changed files, commands run, results, and remaining blockers. Do not
-commit, push, deploy, or add paid/external services.
+apps/web/             Next.js App Router, React, TypeScript strict, Tailwind CSS
+apps/api/             FastAPI, Pydantic, Python et Pytest
+packages/contracts/   emplacement réservé aux artefacts OpenAPI et types générés
+data/scenarios/       emplacement prévu pour les scénarios synthétiques
+data/protocols/       emplacement prévu pour les règles versionnées
+docs/                 produit, architecture, runbook et décisions médicales
+docker-compose.yml    lancement local des services web et API
 ```
 
-## Prompt for the following conversation
+À ce stade, `packages/contracts`, `data/scenarios` et `data/protocols` décrivent
+l'architecture cible mais ne contiennent pas encore le vertical slice. L'API
+expose uniquement son socle, notamment `GET /health`, et le web affiche une page
+de vérification. Aucun moteur médical, scénario patient ou calcul clinique
+n'est implémenté.
 
-After Phase 1 is verified, start a new task with:
+## Frontend
 
-```text
-Read all repository instructions and docs/EXECUTION_PLAN.md. Verify the Phase 1
-scaffold instead of assuming it works. Then implement only Phase 2: the
-contract-first vertical slice. Use draft/simulated markers for all unvalidated
-medical output. Generate TypeScript types from FastAPI OpenAPI and add contract
-tests. Do not invent medical thresholds or decision logic. Run all relevant
-checks and report evidence.
+`apps/web` possède l'interface et l'orchestration de la démonstration. Il utilise
+Next.js App Router, TypeScript strict et Tailwind CSS. Il doit rendre les
+résultats typés du backend et ne doit pas recopier de logique médicale.
+
+Les surfaces de données devront couvrir chargement, vide, incomplet, erreur et
+succès, avec les marqueurs `draft`, `simulated` ou `pending_review` nécessaires.
+
+## Backend et moteur métier
+
+`apps/api` utilise FastAPI et Pydantic aux frontières HTTP. Le backend possédera
+les calculs métier, séparés des routes, du stockage, du frontend et de tout LLM.
+Les règles devront être pures, versionnées, déterministes et testables.
+
+L'absence, l'ancienneté ou la contradiction d'une donnée ne devra jamais être
+interprétée silencieusement comme favorable. Toute analyse exigera une
+validation humaine.
+
+## Contrat frontend/backend
+
+OpenAPI sera la source de vérité du contrat de transport. La prochaine phase
+doit :
+
+1. définir les modèles Pydantic minimaux ;
+2. publier leurs exemples JSON contrôlés ;
+3. générer les types TypeScript dans `packages/contracts` ;
+4. vérifier les exemples par des tests de contrat ;
+5. faire consommer ces types par le frontend.
+
+Ces éléments ne sont pas encore implémentés après la Phase 1.
+
+## Données et protocoles
+
+- `data/scenarios` contiendra uniquement des cas synthétiques déterministes et
+  réinitialisables ;
+- `data/protocols` contiendra les configurations versionnées validées au
+  démarrage ;
+- [MEDICAL_RULES.md](MEDICAL_RULES.md) est le registre humain des validations
+  et questions ouvertes ;
+- [FUTURE_DATA_MODEL.md](reference/FUTURE_DATA_MODEL.md) reste une référence de
+  long terme, pas le schéma du MVP.
+
+Aucune donnée patient réelle, aucun secret et aucune dépendance réseau ne sont
+nécessaires au cœur de la démonstration.
+
+## Docker Compose
+
+`docker-compose.yml` construit et lance :
+
+- l'API FastAPI sur le port `8000`, avec un healthcheck sur `/health` ;
+- le frontend Next.js sur le port `3000`, après disponibilité de l'API.
+
+Les ports peuvent être remplacés via le fichier `.env` racine. Docker Compose
+est la source de vérité pour la démonstration locale conteneurisée.
+
+## Commandes disponibles
+
+```bash
+npm ci      # installer les dépendances web verrouillées
+uv sync     # installer les dépendances Python verrouillées
+make dev    # lancer web et API en développement
+make test   # exécuter Vitest et Pytest
+make check  # format, lint, types et build web de production
+make build  # construire le frontend
+make demo   # construire et lancer les deux services avec Docker Compose
 ```
 
-## Review checklist for every coding-agent handoff
+## Roadmap restante
 
-- Did it read the repository and local instructions?
-- Did it preserve existing work?
-- Did it stay within the requested phase?
-- Did it avoid invented medical behavior?
-- Did it add tests for the behavior it added?
-- Did it actually run the claimed commands?
-- Does the application still run without an external dependency?
-- Are assumptions and blockers explicit?
+### Prochaine étape — vertical slice contract-first
+
+- modèles de transport minimaux pour receveur, donneur, chronologie, analyse de
+  paire, simulation, validation, audit et suivi ;
+- exemples canoniques explicitement synthétiques et non validés ;
+- génération de types TypeScript depuis OpenAPI ;
+- tests de contrat ;
+- endpoints mock en lecture seule pour un receveur et trois donneurs ;
+- rendu frontend utilisant uniquement les types générés.
+
+### Ensuite
+
+- chargement et réinitialisation déterministes des scénarios ;
+- premier test d'intégration API et parcours Playwright ;
+- moteur de règles uniquement après validation du référent santé ;
+- fiabilisation hors connexion et préparation de la démonstration.
+
+Les seuils cliniques, DSA, crossmatch virtuel, confiance, classement et alertes
+post-greffe restent différés jusqu'à validation explicite.
 

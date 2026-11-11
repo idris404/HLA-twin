@@ -1,4 +1,17 @@
-# HLA Twin — Structure complète du jeu de données
+# HLA Twin — Modèle de données futur
+
+> **Référence long terme — hors schéma MVP**
+>
+> Ce modèle complet n'est pas le schéma du MVP. Le MVP utilisera uniquement les
+> champs nécessaires au démonstrateur, avec des données déterministes et
+> exclusivement synthétiques. Aucune donnée patient réelle ne doit être
+> utilisée. Toutes les variables, catégories, cibles et labels cliniques
+> devront être revus et validés ultérieurement par les professionnels et
+> spécialistes compétents.
+
+Le contenu ci-dessous est conservé comme inventaire de recherche afin d'éviter
+de perdre des pistes à long terme. Sa présence ne valide ni son périmètre, ni
+ses variables calculées, ni ses interprétations médicales.
 
 ## 1. Principe général
 
