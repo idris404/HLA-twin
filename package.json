@@ -1,0 +1,17 @@
+{
+  "name": "hla-twin",
+  "private": true,
+  "workspaces": [
+    "apps/web"
+  ],
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "build:web": "npm run build --workspace @hla-twin/web",
+    "check:web": "npm run check --workspace @hla-twin/web",
+    "dev:web": "npm run dev --workspace @hla-twin/web",
+    "test:web": "npm run test --workspace @hla-twin/web"
+  }
+}
+
