@@ -1,0 +1,11 @@
+---
+description: Shared HLA Twin project instructions
+alwaysApply: true
+---
+
+# Shared project rules
+
+Read and follow the repository root `AGENTS.md`. For each file you touch, also
+read the nearest nested `AGENTS.md`. Those files are the source of truth; do not
+duplicate or override their medical-safety and testing rules here.
+
