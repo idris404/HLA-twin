@@ -13,11 +13,12 @@ autonomous transplant decision or a clinically validated medical device.
 
 Read these documents before changing product behavior:
 
-- `FEATURES_HLA_FLOW_COURT.md` for the concise feature framing.
-- `PLAN_HACKATHON_HLA_FLOW.md` for delivery priorities and demo constraints.
-- `DATASET_HLA_TWIN_STRUCTURE.md` for the long-term data model; do not implement
-  all of it for the demo.
-- `docs/EXECUTION_PLAN.md` for the implementation sequence.
+- `docs/PRODUCT.md` for the product scope, priorities and open arbitration.
+- `docs/ARCHITECTURE.md` for the implemented foundation and remaining roadmap.
+- `docs/HACKATHON_RUNBOOK.md` for responsibilities and demo execution.
+- `docs/MEDICAL_RULES.md` for validated decisions and pending health review.
+- `docs/reference/FUTURE_DATA_MODEL.md` for long-term data ideas; do not
+  implement all of it for the demo.
 
 If these documents disagree, preserve the safety boundary, prefer the narrowest
 demo scope, and report the conflict instead of silently choosing a medical rule.

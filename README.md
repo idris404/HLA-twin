@@ -1,83 +1,62 @@
 # HLA Twin
 
-Hackathon demonstrator for explainable, human-validated immunological review in
-kidney transplantation. The project uses only deterministic synthetic data and
-must not be presented as a clinically validated medical device.
+HLA Twin est un démonstrateur de hackathon pour une revue immunologique
+explicable et validée par un professionnel en transplantation rénale. Il utilise
+uniquement des données synthétiques déterministes et ne constitue ni un
+dispositif médical validé, ni un système de décision autonome.
 
-## Current status
+## État actuel
 
-Phase 1 provides a local monorepo foundation: a strict Next.js frontend, a
-FastAPI backend with `GET /health`, automated checks, and Docker images. No
-medical rules, patient scenarios, or clinical calculations are implemented.
+La Phase 1 est terminée : monorepo local, frontend Next.js strict, API FastAPI
+avec `GET /health`, tests, vérifications et images Docker. Le vertical slice,
+les scénarios synthétiques et le moteur métier ne sont pas encore implémentés.
 
-## Prerequisites
+## Documentation
 
-- Node.js 20.9 or newer and npm;
-- Python 3.11 or newer (or `uv`, which can install the pinned Python version);
-- [`uv`](https://docs.astral.sh/uv/) for Python dependencies;
-- GNU Make;
-- Docker with Compose for the containerized demo command.
+- [Produit et périmètre](docs/PRODUCT.md)
+- [Architecture et roadmap](docs/ARCHITECTURE.md)
+- [Runbook du hackathon](docs/HACKATHON_RUNBOOK.md)
+- [Registre des règles médicales](docs/MEDICAL_RULES.md)
+- [Modèle de données futur](docs/reference/FUTURE_DATA_MODEL.md)
+- [Instructions des agents](AGENTS.md)
 
-## Install
+## Installation
 
-From the repository root:
+Prérequis : Node.js 20.9 ou plus récent, npm, Python 3.11 ou `uv`, GNU Make et
+Docker avec Compose pour la démonstration conteneurisée.
 
 ```bash
 npm ci
 uv sync
 ```
 
-The committed lockfiles make both installations reproducible. Copy environment
-examples only when overriding their safe local defaults; the scaffold contains
-no secret.
+Les lockfiles rendent l'installation reproductible. Les fichiers
+`.env.example` ne contiennent aucun secret.
 
-## Commands
-
-```bash
-make dev    # Start Next.js on :3000 and FastAPI on :8000 with reload
-make test   # Run the Vitest frontend test and Pytest API tests
-make check  # Check formatting, lint, strict types, and the production web build
-make demo   # Build and start both services with Docker Compose
-```
-
-`make dev` exposes:
-
-- web status page: <http://localhost:3000>;
-- API health endpoint: <http://localhost:8000/health>;
-- interactive API documentation: <http://localhost:8000/docs>.
-
-Stop `make dev` or `make demo` with `Ctrl+C`. To remove demo containers after a
-Compose run, use `docker compose down`.
-
-For an individual application:
+## Commandes
 
 ```bash
-npm run dev:web
-uv run uvicorn hla_twin.main:app --reload --host 0.0.0.0 --port 8000
+make dev    # Next.js :3000 et FastAPI :8000 avec rechargement
+make test   # Vitest et Pytest
+make check  # formatage, lint, types et build web de production
+make build  # build du frontend
+make demo   # build et lancement des deux services avec Docker Compose
 ```
 
-## Start here
+Après `make dev` :
 
-- [`AGENTS.md`](AGENTS.md): shared instructions for Codex, Claude, Cursor,
-  Copilot, and other coding agents.
-- [`docs/EXECUTION_PLAN.md`](docs/EXECUTION_PLAN.md): phased implementation plan
-  and copy-ready prompts for a new coding-agent conversation.
-- [`FEATURES_HLA_FLOW_COURT.md`](FEATURES_HLA_FLOW_COURT.md): concise product
-  framing.
-- [`PLAN_HACKATHON_HLA_FLOW.md`](PLAN_HACKATHON_HLA_FLOW.md): hackathon plan and
-  safety boundaries.
-- [`DATASET_HLA_TWIN_STRUCTURE.md`](DATASET_HLA_TWIN_STRUCTURE.md): long-term data
-  model, not the three-day implementation scope.
+- interface : <http://localhost:3000> ;
+- santé API : <http://localhost:8000/health> ;
+- documentation OpenAPI : <http://localhost:8000/docs>.
 
-## Planned architecture
+Arrêter avec `Ctrl+C`. Après une démonstration Compose, nettoyer les conteneurs
+avec `docker compose down`.
 
-```text
-apps/web/             Next.js and TypeScript
-apps/api/             FastAPI and Python
-packages/contracts/   OpenAPI artifacts and generated types
-data/                 Synthetic scenarios and versioned protocol configuration
-docs/                 Architecture, decisions, execution and demo documentation
-```
+## Limites non négociables
 
-No real patient data, autonomous transplant decision, treatment recommendation,
-or clinically validated rejection prediction belongs in this repository.
+- aucune donnée patient réelle ou identifiable ;
+- aucune règle, valeur ou interprétation clinique inventée ;
+- validation humaine toujours visible ;
+- aucune revendication de diagnostic, traitement, prédiction du rejet ou
+  intégration officielle à LymFIP ;
+- fonctionnement du cœur de la démonstration sans service externe.
